@@ -16,7 +16,7 @@ setup(
         "tiktoken",
         "click",
         "tqdm"
-    ]
+    ],
     entry_points={
         'console_scripts': [
             'gpt4readability=GPT4Readability.__main__:main',
