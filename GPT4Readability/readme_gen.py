@@ -22,7 +22,6 @@ def generate_readme(root_dir, output_name, model):
     inb_msg += special_file_check_result
 
     username, reponame = get_github_info(root_dir)
-    print(username, reponame)
     inb_msg = inb_msg.replace("[username]", username)
     inb_msg = inb_msg.replace("[repo_name]", reponame)
 
