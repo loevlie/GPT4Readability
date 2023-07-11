@@ -21,6 +21,12 @@ def generate_readme(root_dir, output_name, model):
     special_file_check_result = check_special_files(root_dir) # Checking for the code of conduct and the style guide
     inb_msg += special_file_check_result
 
+    username, reponame = get_github_info(root_dir)
+    print(username, reponame)
+    inb_msg = inb_msg.replace("[username]", username)
+    inb_msg = inb_msg.replace("[repo_name]", reponame)
+
+
     docs = get_docs(root_dir)
     texts = split_docs(docs)
     chain = loadLLM(model)

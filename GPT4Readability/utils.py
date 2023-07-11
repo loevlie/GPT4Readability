@@ -13,6 +13,7 @@ from langchain import LLMMathChain
 from langchain.agents import AgentType, initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import Tool, tool
+import git
 
 def get_docs(root_dir):
     docs = []
@@ -166,3 +167,19 @@ def loadLLM(model):
     llm = ChatOpenAI(temperature=0, model=model)
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain
+
+def get_github_info(repo_path):
+    try:
+        repo = git.Repo(repo_path)
+        remote_url = repo.remotes.origin.url
+    except git.InvalidGitRepositoryError:
+        return 'Not a git repository'
+        
+    if 'github.com' not in remote_url:
+        return 'Not a GitHub repository'
+    
+    repo_info = remote_url.split(':')[-1].split('.git')[0].split('/')
+    username = repo_info[-2]
+    repo_name = repo_info[-1]
+    
+    return username, repo_name

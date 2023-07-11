@@ -37,10 +37,10 @@ You can use any of the emojis below that you feel fit the section of the readme 
 :upside_down_face: 🙃
 :blush: 😊
 
-You may also use any of the following badges (toward the top of the readme) that you think make sense (just replace the username and repository name with the correct one):
+You may also use any of the following badges (toward the top of the readme) that you think make sense:
 
-[![License Badge](https://img.shields.io/github/license/loevlie/GPT4Readability)](https://github.com/loevlie/GPT4Readability/blob/main/LICENSE)
-[![Issues Badge](https://img.shields.io/github/issues/loevlie/GPT4Readability)](https://github.com/loevlie/GPT4Readability/issues)
-[![Pull Requests Badge](https://img.shields.io/github/issues-pr/loevlie/GPT4Readability)](https://github.com/loevlie/GPT4Readability/pulls)
-[![Contributors Badge](https://img.shields.io/github/contributors/loevlie/GPT4Readability)](https://github.com/loevlie/GPT4Readability/graphs/contributors)
+[![License Badge](https://img.shields.io/github/license/[username]/[repo_name])](https://github.com/loevlie/GPT4Readability/blob/main/LICENSE)
+[![Issues Badge](https://img.shields.io/github/issues/[username]/[repo_name])](https://github.com/loevlie/GPT4Readability/issues)
+[![Pull Requests Badge](https://img.shields.io/github/issues-pr/[username]/[repo_name])](https://github.com/loevlie/GPT4Readability/pulls)
+[![Contributors Badge](https://img.shields.io/github/contributors/[username]/[repo_name])](https://github.com/loevlie/GPT4Readability/graphs/contributors)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
