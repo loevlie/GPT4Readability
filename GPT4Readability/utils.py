@@ -163,7 +163,6 @@ def askQs(vector_store, chain, q):
     return resp 
 
 def loadLLM(model):
-#     llm=HuggingFaceHub(repo_id="declare-lab/flan-alpaca-large", model_kwargs={"temperature":0, "max_length":512})
     llm = ChatOpenAI(temperature=0, model=model)
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain
