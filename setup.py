@@ -1,5 +1,10 @@
 from setuptools import setup, find_packages
 
+with open('README.md', 'r') as readme:
+    # ignore gifs
+    description = ''.join([i for i in readme.readlines()
+                           if not i.startswith('![')])
+
 setup(
     name='GPT4Readability',
     version='0.0.1',
@@ -7,6 +12,8 @@ setup(
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
     description='A tool to automatically generate a README.md and suggest code improvements for any python code repository',
+    long_description=description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),  # automatically discover all packages and subpackages
     python_requires='>=3.6',
     install_requires= [
