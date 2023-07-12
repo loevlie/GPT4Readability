@@ -186,15 +186,15 @@ def get_github_info_from_local_repo(repo_path):
             # Use the urlparse function to parse the URL
             result = urlparse(url)
 
-            if "github.com" not in result.netloc:
+            if "github.com" not in result.netloc and "github.com" not in result.path:
                 raise ValueError("URL provided is not a GitHub URL")
 
-            path_parts = result.path.strip("/").split("/")
+            path_parts = result.path.strip("/").lstrip(':').split("/")
 
             if len(path_parts) < 2:
                 raise ValueError("Invalid GitHub URL. Cannot extract username and repository name.")
 
-            username, repo_name = path_parts[0], path_parts[1]
+            username, repo_name = path_parts[0], path_parts[1].replace('.git', '')
             return username, repo_name
 
     return None, None
