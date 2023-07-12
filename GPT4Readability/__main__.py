@@ -26,7 +26,7 @@ def main(path, function, output_readme, output_suggestions, model):
         output_suggestions += '.md'
     
     if 'readme' in function or 'both' in function:
-        print("\n[INFO] Commencing README generation using {model}. Initiating a detailed search and understanding of your codebase. This may take a while depending on the size of your codebase.\n")
+        print(f"\n[INFO] Commencing README generation using {model}. Initiating a detailed search and understanding of your codebase. This may take a while depending on the size of your codebase.\n")
         generate_readme(path, output_readme, model)
         print(f"\n[SUCCESS] README has been successfully generated! You can find it at: {os.path.join(path,output_readme)}\n")
         

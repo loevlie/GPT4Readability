@@ -21,9 +21,13 @@ def generate_readme(root_dir, output_name, model):
     special_file_check_result = check_special_files(root_dir) # Checking for the code of conduct and the style guide
     inb_msg += special_file_check_result
 
-    username, reponame = get_github_info(root_dir)
-    inb_msg = inb_msg.replace("[username]", username)
-    inb_msg = inb_msg.replace("[repo_name]", reponame)
+    username, reponame = get_github_info_from_local_repo(root_dir)
+
+    if username:
+        inb_msg = inb_msg.replace("[username]", username)
+        inb_msg = inb_msg.replace("[repo_name]", reponame.replace(".git",""))
+    else:
+        inb_msg = remove_line_with_pattern_from_string(inb_msg)
 
 
     docs = get_docs(root_dir)

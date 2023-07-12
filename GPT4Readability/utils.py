@@ -13,7 +13,7 @@ from langchain import LLMMathChain
 from langchain.agents import AgentType, initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import Tool, tool
-import git
+from urllib.parse import urlparse
 
 def get_docs(root_dir):
     docs = []
@@ -168,18 +168,39 @@ def loadLLM(model):
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain
 
-def get_github_info(repo_path):
-    try:
-        repo = git.Repo(repo_path)
-        remote_url = repo.remotes.origin.url
-    except git.InvalidGitRepositoryError:
-        return 'Not a git repository'
-        
-    if 'github.com' not in remote_url:
-        return 'Not a GitHub repository'
-    
-    repo_info = remote_url.split(':')[-1].split('.git')[0].split('/')
-    username = repo_info[-2]
-    repo_name = repo_info[-1]
-    
-    return username, repo_name
+
+def get_github_info_from_local_repo(repo_path):
+    # Path to the config file
+    git_config_path = os.path.join(repo_path, ".git", "config")
+
+    # Read the config file
+    with open(git_config_path, "r") as file:
+        lines = file.readlines()
+
+    # Find the line that starts with 'url ='
+    for line in lines:
+        if line.startswith("\turl ="):
+            # Remove 'url =' and strip whitespace
+            url = line.replace("\turl =", "").strip()
+
+            # Use the urlparse function to parse the URL
+            result = urlparse(url)
+
+            if "github.com" not in result.netloc:
+                raise ValueError("URL provided is not a GitHub URL")
+
+            path_parts = result.path.strip("/").split("/")
+
+            if len(path_parts) < 2:
+                raise ValueError("Invalid GitHub URL. Cannot extract username and repository name.")
+
+            username, repo_name = path_parts[0], path_parts[1]
+            return username, repo_name
+
+    return None, None
+
+def remove_line_with_pattern_from_string(input_string):
+    pattern = "[username]/[repo_name]"
+    lines = input_string.splitlines()
+    lines_without_pattern = [line for line in lines if pattern not in line]
+    return '\n'.join(lines_without_pattern)
