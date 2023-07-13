@@ -25,6 +25,7 @@ def main(path, function, output_readme, output_suggestions, model):
     if not output_suggestions.endswith('.md'):
         output_suggestions += '.md'
     
+    # You can choose to use OpenAI's GPT-3.5-turbo or GPT-4 model
     if 'readme' in function or 'both' in function:
         print(f"\n[INFO] Commencing README generation using {model}. Initiating a detailed search and understanding of your codebase. This may take a while depending on the size of your codebase.\n")
         generate_readme(path, output_readme, model)

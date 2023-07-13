@@ -134,14 +134,14 @@ def check_special_files(directory):
     if code_of_conduct_exists:
         result += f"A code of conduct exists at the following path: {code_of_conduct_path}. "
     else:
-        result += "There is no code of conduct in the directory. Do not bring up a code of conduct in the readme."
+        result += "There is no code of conduct in the directory. \n\nDO NOT bring up a code of conduct in the readme."
     
     result += "\n"
     
     if style_guide_exists:
         result += f"A style guide exists at the following path: {style_guide_path}."
     else:
-        result += "There is no style guide in the directory.  Do not bring up a style guide in the readme."
+        result += "There is no style guide in the directory.  \n\nDO NOT bring up a style guide in the readme."
         
     return result
 
