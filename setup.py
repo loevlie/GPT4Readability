@@ -15,6 +15,7 @@ setup(
     long_description=description,
     long_description_content_type='text/markdown',
     packages=find_packages(),  # automatically discover all packages and subpackages
+    package_data={"GPT4Readability": ["prompts/*.txt"]},
     python_requires='>=3.6',
     install_requires= [
         "langchain",

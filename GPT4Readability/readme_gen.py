@@ -1,6 +1,8 @@
 import os
 from getpass import getpass
 from GPT4Readability.utils import *
+from importlib.resources import open_text
+
 
 def generate_readme(root_dir, output_name, model):
     """Generates a README.md file based on the python files in the provided directory
@@ -9,12 +11,15 @@ def generate_readme(root_dir, output_name, model):
         root_dir (str): The root directory of the python package to parse and generate a readme for
     """
 
-    prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
-    prompt_path = os.path.join(prompt_folder_name, "readme_prompt.txt")
+    # prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
+    # prompt_path = os.path.join(prompt_folder_name, "readme_prompt.txt")
 
-    with open(prompt_path) as f:
-        lines = f.readlines()
-    inb_msg = "".join(lines)
+    with open_text('GPT4Readability.prompts', 'readme_prompt.txt') as f:
+        inb_msg = f.read()
+
+    # with open(prompt_path) as f:
+    #     lines = f.readlines()
+    # inb_msg = "".join(lines)
 
     file_check_result = check_files_in_directory(root_dir) # Checking for the license and requirements.txt
     inb_msg += file_check_result

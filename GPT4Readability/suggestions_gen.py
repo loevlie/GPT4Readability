@@ -2,7 +2,7 @@ import os
 from getpass import getpass
 from GPT4Readability.utils import *
 from tqdm import tqdm 
-import logging
+from importlib.resources import open_text
 
 def generate_suggestions(root_dir, output_name, model):
     """Generates a suggestions.md file with suggested improvements to the code based on the python files in the provided directory
@@ -11,8 +11,11 @@ def generate_suggestions(root_dir, output_name, model):
         root_dir (str): The root directory of the python package to parse and generate a readme for
     """
 
-    prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
-    prompt_path = os.path.join(prompt_folder_name, "refactor_prompt.txt")
+    # prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
+    # prompt_path = os.path.join(prompt_folder_name, "refactor_prompt.txt")
+
+    with open_text('GPT4Readability.prompts', 'refactor_prompt.txt') as f:
+        inb_msg = f.read()
 
     with open(prompt_path) as f:
         lines = f.readlines()
