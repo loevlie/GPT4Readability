@@ -29,7 +29,7 @@ def generate_readme(root_dir, output_name, model):
     username, reponame = get_github_info_from_local_repo(root_dir)
 
     if username:
-        inb_msg = inb_msg.replace("[username]", username)
+        inb_msg = inb_msg.replace("[username]", username.replace("git@github.com:",""))
         inb_msg = inb_msg.replace("[repo_name]", reponame.replace(".git",""))
     else:
         inb_msg = remove_line_with_pattern_from_string(inb_msg)
