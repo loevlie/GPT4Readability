@@ -37,9 +37,12 @@ def generate_readme(root_dir, output_name, model):
 
     docs = get_docs(root_dir)
     texts = split_docs(docs)
-    chain = loadLLM(model)
-    LOCAL_vector_store = makeEmbeddings(texts)
-    LOCAL_resp = askQs(LOCAL_vector_store, chain, inb_msg)
+    if len(texts) > 8300: # For now this is roughly the size we can accept
+       LOCAL_resp = 'The GitHub repository is too large (I am working on getting this working with larger repositories)'
+    else:
+        chain = loadLLM(model)
+        LOCAL_vector_store = makeEmbeddings(texts)
+        LOCAL_resp = askQs(LOCAL_vector_store, chain, inb_msg)
 
     # Write the string to the README.md file
     with open(os.path.join(root_dir,output_name), 'w') as f:
