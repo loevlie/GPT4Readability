@@ -17,9 +17,6 @@ def generate_suggestions(root_dir, output_name, model):
     with open_text('GPT4Readability.prompts', 'refactor_prompt.txt') as f:
         inb_msg = f.read()
 
-    with open(prompt_path) as f:
-        lines = f.readlines()
-    inb_msg = "".join(lines)
 
     docs = get_docs(root_dir)
     python_files = find_python_files(root_dir)
