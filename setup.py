@@ -7,7 +7,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='GPT4Readability',
-    version='0.0.6',
+    version='0.0.7',
     url='https://github.com/loevlie/GPT4Readability',
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
