@@ -15,7 +15,7 @@ def generate_readme(root_dir, output_name, model):
     # prompt_path = os.path.join(prompt_folder_name, "readme_prompt.txt")
 
     with pkg_resources.open_text('GPT4Readability.prompts','readme_prompt.txt') as f:         
-		inb_msg = f.read()
+	    inb_msg = f.read()
 
     # with open(prompt_path) as f:
     #     lines = f.readlines()
