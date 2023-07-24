@@ -1,7 +1,7 @@
 import os
 from getpass import getpass
 from GPT4Readability.utils import *
-from importlib.resources import open_text
+import importlib.resources as pkg_resources  
 
 
 def generate_readme(root_dir, output_name, model):
@@ -14,8 +14,8 @@ def generate_readme(root_dir, output_name, model):
     # prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
     # prompt_path = os.path.join(prompt_folder_name, "readme_prompt.txt")
 
-    with open_text('GPT4Readability.prompts', 'readme_prompt.txt') as f:
-        inb_msg = f.read()
+    with pkg_resources.open_text('GPT4Readability.prompts','readme_prompt.txt') as f:         
+		inb_msg = f.read()
 
     # with open(prompt_path) as f:
     #     lines = f.readlines()

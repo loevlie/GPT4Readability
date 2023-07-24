@@ -7,7 +7,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='GPT4Readability',
-    version='0.0.5',
+    version='0.0.6',
     url='https://github.com/loevlie/GPT4Readability',
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
@@ -15,6 +15,7 @@ setup(
     long_description=description,
     long_description_content_type='text/markdown',
     packages=find_packages(),  # automatically discover all packages and subpackages
+    include_package_data=True,     
     package_data={"GPT4Readability": ["prompts/*.txt"]},
     python_requires='>=3.6',
     install_requires= [
