@@ -25,7 +25,7 @@ GPT4Readability is a powerful tool designed to automatically generate a README.m
 To use GPT4Readability, you need to have Python 3.6 or higher installed on your system. You can install GPT4Readability and its dependencies using the following command:
 
 ```shell
-pip install GPT4Readability
+pip install GPT4Readability==0.0.8
 ```
 
 ## Usage
