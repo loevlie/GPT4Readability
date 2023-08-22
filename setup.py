@@ -7,11 +7,11 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='GPT4Readability',
-    version='0.0.7',
+    version='0.0.8',
     url='https://github.com/loevlie/GPT4Readability',
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
-    description='A tool to automatically generate a README.md and suggest code improvements for any python code repository',
+    description='A tool to automatically generate a README.md and suggest code improvements for any code repository',
     long_description=description,
     long_description_content_type='text/markdown',
     packages=find_packages(),  # automatically discover all packages and subpackages

@@ -15,17 +15,63 @@ from langchain.chat_models import ChatOpenAI
 from langchain.tools import Tool, tool
 from urllib.parse import urlparse
 
+# def get_docs(root_dir):
+#     docs = []
+#     for dirpath, dirnames, filenames in os.walk(root_dir):
+#         for file in filenames:
+#             if file.endswith((".py", ".html")) and "/.venv/" not in dirpath:
+#                 try:
+#                     loader = TextLoader(os.path.join(dirpath, file), encoding="utf-8")
+#                     docs.extend(loader.load_and_split())
+#                 except Exception as e:
+#                     pass
+#     return docs
+
+
 def get_docs(root_dir):
     docs = []
+
+    # List of popular file extensions for various programming languages
+    extensions = [
+        '.py',  # Python
+        '.js',  # JavaScript
+        '.jsx', # React (JavaScript)
+        '.ts',  # TypeScript
+        '.tsx', # TypeScript with JSX
+        '.java', # Java
+        '.c',   # C
+        '.cpp', # C++
+        '.cs',  # C#
+        '.go',  # Go
+        '.rb',  # Ruby
+        '.php', # PHP
+        '.rs',  # Rust
+        '.swift', # Swift
+        '.m',   # Objective-C
+        '.html',# HTML
+        '.css', # CSS
+        '.scss',# SCSS
+        '.kt',  # Kotlin
+        '.lua', # Lua
+        '.r',   # R
+        '.pl',  # Perl
+        '.sh',  # Shell Script
+        '.scala', # Scala
+        '.jl', # Julia
+        # '.md',  # Markdown (for documentation purposes) disabled for now because it could cause issues with simply copying whatever readme is already present
+    ]
+
     for dirpath, dirnames, filenames in os.walk(root_dir):
         for file in filenames:
-            if file.endswith((".py", ".html")) and "/.venv/" not in dirpath:
+            if file.endswith(tuple(extensions)) and "/.venv/" not in dirpath:
                 try:
                     loader = TextLoader(os.path.join(dirpath, file), encoding="utf-8")
                     docs.extend(loader.load_and_split())
                 except Exception as e:
                     pass
+           
     return docs
+
 
 def get_function_name(code):
     """
