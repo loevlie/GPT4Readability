@@ -14,6 +14,11 @@ from langchain.agents import AgentType, initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import Tool, tool
 from urllib.parse import urlparse
+from nbconvert import HTMLExporter
+from langchain.document_loaders import TextLoader, NotebookLoader
+from nbconvert import MarkdownExporter
+from langchain.document_loaders import UnstructuredMarkdownLoader
+import re 
 
 # def get_docs(root_dir):
 #     docs = []
@@ -30,6 +35,15 @@ from urllib.parse import urlparse
 
 def get_docs(root_dir):
     docs = []
+    include_md = False  # By default, don't include Markdown files
+
+    # Check for any .md files in the directory
+    for dirpath, _, filenames in os.walk(root_dir):
+        if any(file.endswith('.md') for file in filenames):
+            user_input = input("Found Markdown files. Do you want to include them? (yes/no): ").strip().lower()
+            if user_input == 'yes':
+                include_md = True
+            break  # Once you found .md files and got user input, you can break out of loop
 
     # List of popular file extensions for various programming languages
     extensions = [
@@ -58,18 +72,76 @@ def get_docs(root_dir):
         '.sh',  # Shell Script
         '.scala', # Scala
         '.jl', # Julia
+        '.ipynb', # Jupyter Notebook
         # '.md',  # Markdown (for documentation purposes) disabled for now because it could cause issues with simply copying whatever readme is already present
     ]
 
+    if include_md:
+        extensions.append('.md')  # Add .md extension if user chose to include
+
     for dirpath, dirnames, filenames in os.walk(root_dir):
         for file in filenames:
+            full_file_path = os.path.join(dirpath, file)
+
             if file.endswith(tuple(extensions)) and "/.venv/" not in dirpath:
                 try:
-                    loader = TextLoader(os.path.join(dirpath, file), encoding="utf-8")
-                    docs.extend(loader.load_and_split())
+                    if file.endswith('.ipynb'):
+                        # Convert notebook to Markdown
+                        md_exporter = MarkdownExporter()
+                        body, resources = md_exporter.from_filename(full_file_path)
+
+                        # Remove images from the markdown content
+                        body = re.sub(r'!\[.*?\]\(.*?\)', '', body)
+
+                        md_filename = full_file_path.replace('.ipynb', '.md')
+                        
+                        # Save the converted notebook as a markdown file
+                        with open(md_filename, 'w', encoding='utf-8') as f:
+                            f.write(body)
+
+                        # Load the saved markdown using TextLoader
+                        loader = UnstructuredMarkdownLoader(md_filename, encoding="utf-8")
+                        docs.extend(loader.load())
+
+                        # Delete the saved markdown
+                        os.remove(md_filename)
+
+                    else:
+                        loader = TextLoader(full_file_path, encoding="utf-8")
+                        docs.extend(loader.load_and_split())
                 except Exception as e:
+                    print(e)
                     pass
-           
+    if len(docs) == 0:
+        readable_files = [
+            "Python",
+            "JavaScript & React (JSX)",
+            "TypeScript & TypeScript with JSX",
+            "Java",
+            "C & C++",
+            "C#",
+            "Go",
+            "Ruby",
+            "PHP",
+            "Rust",
+            "Swift",
+            "Objective-C",
+            "HTML, CSS, & SCSS",
+            "Kotlin",
+            "Lua",
+            "R",
+            "Perl",
+            "Shell Script",
+            "Scala",
+            "Julia",
+            "Jupyter Notebook (experimental)"
+        ]
+        
+        if include_md:
+            readable_files.append("markdown")
+
+        raise ValueError(f"GPT4Readability did not find any files that it can read within the provided directory. The readable files are: {', '.join(readable_files)}.")
+
     return docs
 
 

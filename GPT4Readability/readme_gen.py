@@ -11,15 +11,8 @@ def generate_readme(root_dir, output_name, model):
         root_dir (str): The root directory of the python package to parse and generate a readme for
     """
 
-    # prompt_folder_name = os.path.join(os.path.dirname(__file__), "prompts")
-    # prompt_path = os.path.join(prompt_folder_name, "readme_prompt.txt")
-
     with pkg_resources.open_text('GPT4Readability.prompts','readme_prompt.txt') as f:         
 	    inb_msg = f.read()
-
-    # with open(prompt_path) as f:
-    #     lines = f.readlines()
-    # inb_msg = "".join(lines)
 
     file_check_result = check_files_in_directory(root_dir) # Checking for the license and requirements.txt
     inb_msg += file_check_result
