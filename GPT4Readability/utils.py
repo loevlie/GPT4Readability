@@ -33,17 +33,18 @@ import re
 #     return docs
 
 
-def get_docs(root_dir):
+def get_docs(root_dir, include_md):
     docs = []
-    include_md = False  # By default, don't include Markdown files
-
-    # Check for any .md files in the directory
-    for dirpath, _, filenames in os.walk(root_dir):
-        if any(file.endswith('.md') for file in filenames):
-            user_input = input("Found Markdown files. Do you want to include them? (yes/no): ").strip().lower()
-            if user_input == 'yes':
-                include_md = True
-            break  # Once you found .md files and got user input, you can break out of loop
+    
+    if include_md == None:
+        include_md = False  # By default, don't include Markdown files
+        # Check for any .md files in the directory
+        for dirpath, _, filenames in os.walk(root_dir):
+            if any(file.endswith('.md') for file in filenames):
+                user_input = input("Found Markdown files. Do you want to include them? (yes/no): ").strip().lower()
+                if user_input == 'yes':
+                    include_md = True
+                break  # Once you found .md files and got user input, you can break out of loop
 
     # List of popular file extensions for various programming languages
     extensions = [

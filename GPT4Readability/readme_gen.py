@@ -4,7 +4,7 @@ from GPT4Readability.utils import *
 import importlib.resources as pkg_resources  
 
 
-def generate_readme(root_dir, output_name, model):
+def generate_readme(root_dir, output_name, model, include_md):
     """Generates a README.md file based on the python files in the provided directory
 
     Args:
@@ -28,7 +28,7 @@ def generate_readme(root_dir, output_name, model):
         inb_msg = remove_line_with_pattern_from_string(inb_msg)
 
 
-    docs = get_docs(root_dir)
+    docs = get_docs(root_dir, include_md)
     texts = split_docs(docs)
     if len(texts) > 8300: # For now this is roughly the size we can accept
        LOCAL_resp = 'The GitHub repository is too large (I am working on getting this working with larger repositories)'
