@@ -7,7 +7,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='GPT4Readability',
-    version='0.1.1',
+    version='0.1.2',
     url='https://github.com/loevlie/GPT4Readability',
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
@@ -26,7 +26,8 @@ setup(
         "click",
         "tqdm",
         "unstructured",
-        "markdown"
+        "markdown",
+        "nbconvert"
     ],
     entry_points={
         'console_scripts': [
