@@ -19,7 +19,7 @@ def generate_suggestions(root_dir, output_name, model):
 	    inb_msg = f.read()
 
 
-    docs = get_docs(root_dir)
+    docs = get_docs(root_dir,include_md=True)
     python_files = find_python_files(root_dir)
     suggestions = []
     
