@@ -13,7 +13,7 @@ GPT4Readability is a powerful tool designed to automatically generate a README.m
 * I added the version (0.1.4) to the installation section.
 * UPDATE: README generation (suggestions coming soon!) is now integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces) using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/JohanDL/GPT4Readability)
 * I recently got access to GPT-4 so the GPT-4 version of the gpt4readability README can be found here [GPT-4_Example](https://github.com/loevlie/GPT4Readability/blob/main/Example_READMEs/gpt4readability_gpt4_readme.md)
-* The README file generation works with all programing languages but for now the code suggestions is still python only. 
+* The README file generation works with most programing languages but for now the code suggestions is still python only. 
 
 ## Features
 
