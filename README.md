@@ -75,6 +75,8 @@ Contributions to GPT4Readability are welcome! If you encounter any issues or hav
 
 If you need support or have any questions, feel free to reach out to the author at loevliedenny@gmail.com.
 
+<a href="https://www.buymeacoffee.com/loevliedenny" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
 ## License
 
 GPT4Readability is licensed under the [MIT License](https://github.com/loevlie/GPT4Readability/blob/main/LICENSE).
