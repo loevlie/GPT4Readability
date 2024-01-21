@@ -34,6 +34,8 @@ You can use any of the emojis below that you feel fit the section of the readme 
 :joy: 😂
 :upside_down_face: 🙃
 :blush: 😊
+:open_file_folder:
+:zap:
 
 You may also use any of the following badges (toward the top of the readme) that you think make sense:
 

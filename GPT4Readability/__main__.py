@@ -1,43 +1,44 @@
 import os
-import click
+import typer
+from typing import Optional
+from typing_extensions import Annotated
 from getpass import getpass
 from GPT4Readability.readme_gen import generate_readme
 from GPT4Readability.suggestions_gen import generate_suggestions
 
-@click.command()
-@click.argument('path')
-@click.option('--function', '-f', multiple=True, type=click.Choice(['readme', 'suggestions', 'both'], case_sensitive=False), default=['both'], help="Function to use: 'readme', 'suggestions' or 'both'")
-@click.option('--output_readme', '-or', type=str, default='README.md', help='Output filename for readme')
-@click.option('--output_suggestions', '-os', type=str, default='suggestions.md', help='Output filename for suggestions')
-@click.option('--model', '-m', type=click.Choice(['gpt-3.5-turbo', 'gpt-4'], case_sensitive=False), default='gpt-3.5-turbo', help='Model to use: "gpt-3.5-turbo" or "gpt-4"')
-@click.option('--include-md',  type=click.Choice(['true', 'false'], case_sensitive=False), default=None, help='Whether or not to include .md files.  Options - True or False.  If not specified, the user will be asked.')
-def main(path, function, output_readme, output_suggestions, model, include_md):
+
+app = typer.Typer()
+
+@app.command()
+def main(
+    path: str,
+    function: Annotated[str, typer.Option("--function", "-f",help="Function to use: 'readme', 'suggestions', or 'both'")] = "readme",
+    output_readme: Annotated[str, typer.Option("--output-readme", "-or",help='Output filename for readme')] = "README_Generated.md",
+    output_suggestions: Annotated[str, typer.Option("--output-suggestions", "-os", help='Output filename for suggestions')] = "suggestions.md",
+    model: Annotated[str, typer.Option("--model", "-m",help='Model to use. Possible models: "gpt-3.5-turbo", "gpt-4", "local"')] = "gpt-3.5-turbo",
+    include_md: Annotated[Optional[bool], typer.Option(help='Whether to include .md files')] = None,
+    weights: Annotated[Optional[str], typer.Option("--weights", "-w",help='Path to weights file for the localAI model')] = None,
+    processing_unit: Annotated[Optional[str], typer.Option("--processing-unit", "-pu",help='Processing unit to use (CPU, NVIDIA, Metal)')] = None
+):
     """CLI tool for GPT4Readability."""
-    if include_md == None:
-        pass 
-    else:
-        include_md = include_md.lower() == 'true'
-    
-    # Check for OPENAI_API_KEY environment variable
-    if not os.getenv('OPENAI_API_KEY'):
+
+    if not os.getenv('OPENAI_API_KEY') and model not in ['local', 'mixtral_8x7b']:
         print("OPENAI_API_KEY environment variable not found. Please input it:")
         os.environ['OPENAI_API_KEY'] = getpass()
-    
-    # Append '.md' if it's not there
+
     if not output_readme.endswith('.md'):
         output_readme += '.md'
     
     if not output_suggestions.endswith('.md'):
         output_suggestions += '.md'
-    
-    # You can choose to use OpenAI's GPT-3.5-turbo or GPT-4 model
+
     if 'readme' in function or 'both' in function:
-        print(f"\n[INFO] Commencing README generation using {model}. Initiating a detailed search and understanding of your codebase. This may take a while depending on the size of your codebase.\n")
-        generate_readme(path, output_readme, model, include_md)
-        print(f"\n[SUCCESS] README has been successfully generated! You can find it at: {os.path.join(path,output_readme)}\n")
-        
+        print(f"\n[INFO] Commencing README generation using {model}.")
+        generate_readme(path, output_readme, model, include_md, weights=weights, processing_unit=processing_unit)
+        print(f"\n[SUCCESS] README generated at: {os.path.join(path, output_readme)}\n")
+    
     if 'suggestions' in function or 'both' in function:
         generate_suggestions(path, output_suggestions, model)
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    typer.run(main)

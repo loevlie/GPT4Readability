@@ -1,0 +1,9 @@
+max_tokens: 1024
+# model_path: ~/Desktop/llm_models/mixtral-8x7b-instruct-v0.1.Q4_K_M.gguf
+n_batch: 512
+n_ctx: 10000
+n_gpu_layers: 12
+temperature: 0.05
+top_p: 1
+verbose: true
+# processing_unit: NVIDIA

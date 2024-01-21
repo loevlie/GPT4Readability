@@ -1,36 +1,25 @@
-from langchain.document_loaders import TextLoader
-from langchain.vectorstores import FAISS
-from langchain.chat_models import ChatOpenAI
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain.chains.question_answering import load_qa_chain
-from langchain.embeddings.openai import OpenAIEmbeddings
 import os
-from langchain.chains import RetrievalQA
-from langchain import LLMMathChain
-from langchain.agents import AgentType, initialize_agent
-from langchain.chat_models import ChatOpenAI
-from langchain.tools import Tool, tool
+import re
 from urllib.parse import urlparse
-from nbconvert import HTMLExporter
-from langchain.document_loaders import TextLoader, NotebookLoader
-from nbconvert import MarkdownExporter
-from langchain.document_loaders import UnstructuredMarkdownLoader
-import re 
-
-# def get_docs(root_dir):
-#     docs = []
-#     for dirpath, dirnames, filenames in os.walk(root_dir):
-#         for file in filenames:
-#             if file.endswith((".py", ".html")) and "/.venv/" not in dirpath:
-#                 try:
-#                     loader = TextLoader(os.path.join(dirpath, file), encoding="utf-8")
-#                     docs.extend(loader.load_and_split())
-#                 except Exception as e:
-#                     pass
-#     return docs
+from nbconvert import HTMLExporter, MarkdownExporter
+import langchain
+from langchain.chains import LLMMathChain
+from langchain.agents import AgentType, initialize_agent
+# from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.base import BaseCallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.chains import RetrievalQA, LLMChain
+from langchain.chains.question_answering import load_qa_chain
+from langchain_community.document_loaders import TextLoader, NotebookLoader, UnstructuredMarkdownLoader
+from langchain_community.embeddings import HuggingFaceInstructEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI
+from langchain.cache import InMemoryCache
+from langchain_community.llms import LlamaCpp
+from langchain_community.embeddings import LlamaCppEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 def get_docs(root_dir, include_md):
@@ -111,8 +100,8 @@ def get_docs(root_dir, include_md):
                         loader = TextLoader(full_file_path, encoding="utf-8")
                         docs.extend(loader.load_and_split())
                 except Exception as e:
-                    print(e)
-                    pass
+                    print(f"Error processing file {full_file_path}: {e}")
+                    continue
     if len(docs) == 0:
         readable_files = [
             "Python",
@@ -150,7 +139,8 @@ def get_function_name(code):
     """
     Extract function name from a line beginning with "def "
     """
-    assert code.startswith("def ")
+    if not code.startswith("def ") or "(" not in code:
+        raise ValueError("Invalid function definition format")
     return code[len("def "): code.index("(")]
 
 
@@ -183,7 +173,8 @@ def get_functions(filepath):
     """
     Get all functions in a Python file.
     """
-    whole_code = open(filepath).read().replace("\r", "\n")
+    with open(filepath, 'r') as file:
+        whole_code = file.read().replace("\r", "\n")
     all_lines = whole_code.split("\n")
     for i, l in enumerate(all_lines):
         if l.startswith("def "):
@@ -270,9 +261,18 @@ def split_docs(docs):
     return texts
 
 
-def makeEmbeddings(chunked_docs):
-    # Create embeddings and store them in a FAISS vector store
-    embedder = OpenAIEmbeddings(disallowed_special=())
+def makeEmbeddings(chunked_docs, model_type="gpt"):
+    if "gpt" in model_type:
+        # Create embeddings and store them in a FAISS vector store
+        embedder = OpenAIEmbeddings(disallowed_special=())
+    else:
+        langchain.llm_cache = InMemoryCache()
+        # # this is what was used to create embeddings for the book
+        embedder = HuggingFaceInstructEmbeddings(
+            embed_instruction="Represent the code repository for retrieval: ",
+            query_instruction="Represent the question for retrieving supporting code from the code repository: "
+            )
+
     vector_store = FAISS.from_documents(chunked_docs, embedder)
     return vector_store
 
@@ -282,8 +282,58 @@ def askQs(vector_store, chain, q):
     resp = chain.run(input_documents=similar_docs, question=q) # .run
     return resp 
 
-def loadLLM(model):
-    llm = ChatOpenAI(temperature=0, model=model)
+def process_segment(chain, vector_store, segment_prompt, previous_context="", additional_info=""):
+    # Include previous context in the current prompt
+    full_prompt = "context:  " + previous_context + "\n\n" + "Important information to keep in mind:  " + additional_info + "\n" + segment_prompt 
+    response = askQs(vector_store, chain, full_prompt)
+    return response.strip()
+
+def loadLLM(model, weights=None, processing_unit=None, config=None):
+    if "gpt" in model:
+        llm = ChatOpenAI(temperature=0, model=model)
+    else:
+        callback_manager = BaseCallbackManager([StreamingStdOutCallbackHandler()])
+        # Update the model path as per your system
+        if processing_unit=="CPU":
+            llm = LlamaCpp(
+                model_path=weights,
+                temperature=config["temperature"],
+                max_tokens=config["max_tokens"],
+                # repeat_penalty=2.2,
+                n_ctx=config["n_ctx"],
+                top_p=config["top_p"],
+                callback_manager=callback_manager,
+                verbose=config["verbose"],
+            )
+        elif processing_unit=="NVIDIA":
+            llm = LlamaCpp(
+                model_path=weights,
+                temperature=config["temperature"],
+                max_tokens=config["max_tokens"],
+                # repeat_penalty=2.2,
+                n_ctx=config["n_ctx"],
+                top_p=config["top_p"],
+                n_batch=config["n_batch"],
+                # n_threads=8,            # The number of CPU threads to use, tailor to your system and the resulting performance (leaving default for now)
+                n_gpu_layers=config["n_gpu_layers"],         # The number of layers to offload to GPU, if you have GPU acceleration available
+                callback_manager=callback_manager,
+                verbose=config["verbose"],
+            )
+        elif processing_unit=="Metal":
+            llm = LlamaCpp(
+                model_path=weights,
+                temperature=config["temperature"],
+                max_tokens=config["max_tokens"],
+                # repeat_penalty=2.2,
+                n_ctx=config["n_ctx"],
+                top_p=config["top_p"],
+                n_batch=config["n_batch"],
+                f16_kv=True,  # MUST set to True, otherwise you will run into problem after a couple of calls
+                # n_threads=8,            # The number of CPU threads to use, tailor to your system and the resulting performance (leaving default for now)
+                n_gpu_layers=config["n_gpu_layers"],         # The number of layers to offload to GPU, if you have GPU acceleration available
+                callback_manager=callback_manager,
+                verbose=config["verbose"],
+            )
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain
 

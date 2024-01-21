@@ -7,11 +7,11 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='GPT4Readability',
-    version='0.1.4',
+    version='0.1.5',
     url='https://github.com/loevlie/GPT4Readability',
     author='Dennis Johan Loevlie',
     author_email='loevliedenny@gmail.com',
-    description='A tool to automatically generate a README.md and suggest code improvements for any code repository',
+    description='A tool to automatically generate a README.md and suggest code improvements for any code repository.  It uses GPT-3, GPT-4, or an optional LocalAI model to generate the README.md and suggestions.',
     long_description=description,
     long_description_content_type='text/markdown',
     packages=find_packages(),  # automatically discover all packages and subpackages
@@ -27,11 +27,13 @@ setup(
         "tqdm",
         "unstructured",
         "markdown",
-        "nbconvert"
+        "nbconvert",
+        "typer[all]",
+        "pyyaml"
     ],
     entry_points={
         'console_scripts': [
-            'gpt4readability=GPT4Readability.__main__:main',
+            'gpt4readability=GPT4Readability.__main__:app',
         ],
     },
     classifiers=[
