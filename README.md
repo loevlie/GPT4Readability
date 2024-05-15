@@ -50,7 +50,7 @@ The following packages are required:
 You can install all dependencies using pip:
 
 ```bash
-pip install langchain openai faiss-cpu tiktoken click tqdm unstructured markdown nbconvert typer[all] pyyaml
+pip install langchain openai faiss-cpu tiktoken click tqdm unstructured markdown nbconvert typer[all] pyyaml langchain_openai
 ```
 
 ## Usage :smiley:
