@@ -339,34 +339,39 @@ def loadLLM(model, weights=None, processing_unit=None, config=None):
 
 
 def get_github_info_from_local_repo(repo_path):
-    # Path to the config file
-    git_config_path = os.path.join(repo_path, ".git", "config")
+    try:
+        # Path to the config file
+        git_config_path = os.path.join(repo_path, ".git", "config")
 
-    # Read the config file
-    with open(git_config_path, "r") as file:
-        lines = file.readlines()
+        # Read the config file
+        with open(git_config_path, "r") as file:
+            lines = file.readlines()
 
-    # Find the line that starts with 'url ='
-    for line in lines:
-        if line.startswith("\turl ="):
-            # Remove 'url =' and strip whitespace
-            url = line.replace("\turl =", "").strip()
+        # Find the line that starts with 'url ='
+        for line in lines:
+            if line.startswith("\turl ="):
+                # Remove 'url =' and strip whitespace
+                url = line.replace("\turl =", "").strip()
 
-            # Use the urlparse function to parse the URL
-            result = urlparse(url)
+                # Use the urlparse function to parse the URL
+                result = urlparse(url)
 
-            if "github.com" not in result.netloc and "github.com" not in result.path:
-                raise ValueError("URL provided is not a GitHub URL")
+                if "github.com" not in result.netloc and "github.com" not in result.path:
+                    raise ValueError("URL provided is not a GitHub URL")
 
-            path_parts = result.path.strip("/").lstrip(':').split("/")
+                path_parts = result.path.strip("/").lstrip(':').split("/")
 
-            if len(path_parts) < 2:
-                raise ValueError("Invalid GitHub URL. Cannot extract username and repository name.")
+                if len(path_parts) < 2:
+                    raise ValueError("Invalid GitHub URL. Cannot extract username and repository name.")
 
-            username, repo_name = path_parts[0], path_parts[1].replace('.git', '')
-            return username, repo_name
+                username, repo_name = path_parts[0], path_parts[1].replace('.git', '')
+                return username, repo_name
 
-    return None, None
+        return None, None
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None, None
 
 def remove_line_with_pattern_from_string(input_string):
     pattern = "[username]/[repo_name]"
