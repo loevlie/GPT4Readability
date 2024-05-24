@@ -78,5 +78,5 @@ def generate_readme(root_dir, output_name, model, include_md,weights=None, proce
             print("\n\nDone!\n\n")
 
     # Write the string to the README.md file
-    with open(os.path.join(root_dir,output_name), 'w') as f:
+    with open(os.path.join(root_dir,output_name), 'w', encoding='utf-8') as f:
         f.write(LOCAL_resp)
